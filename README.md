@@ -1,36 +1,176 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# 🟡🔴 FourSight
 
-First, run the development server:
+### «Четыре в ряд», которые делают тебя сильнее.
+
+Любой сайт даёт просто играть. **FourSight** разбирает каждый твой ход, объясняет ошибки человеческим языком и превращает пятиминутную партию в урок — всё это в аккуратном двуязычном веб-приложении с рейтингами, задачами и магазином косметики.
+
+🔗 **Демо:** [foursight-pi.vercel.app](https://foursight-pi.vercel.app)
+
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs)
+![React](https://img.shields.io/badge/React-19-149eca?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript)
+![Tailwind](https://img.shields.io/badge/Tailwind-v4-38bdf8?logo=tailwindcss)
+![Supabase](https://img.shields.io/badge/Supabase-Postgres%20%2B%20Auth%20%2B%20Realtime-3ecf8e?logo=supabase)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+</div>
+
+---
+
+## 🎮 Суть игры
+
+**«Четыре в ряд»** (Connect Four) — игра на двоих на поле 7×6. Игроки по очереди бросают фишки в колонки; фишка падает на нижнюю свободную клетку. Побеждает тот, кто первым выстроит **четыре свои фишки подряд** — по горизонтали, вертикали или диагонали. Если поле заполнилось без линии — ничья.
+
+Правила учатся за минуту, а мастерство растёт годами — поэтому здесь и нужен тренер.
+
+---
+
+## ✨ Что реализовано
+
+### 🧠 AI-тренер
+После партии каждый ход получает оценку — *Лучший / Блестящий / Хороший / Неточность / Ошибка / Зевок / Упущенная победа / Вынужденный* — с коротким объяснением по реальной доске («Теперь соперник выигрывает ходом в колонку 4»). Всё детерминированно, считается локально, без LLM в горячем пути.
+
+### 🤖 Три уровня ИИ
+Лёгкий, Средний и Сложный на основе **negamax-движка** на битбордах с альфа-бета-отсечением, итеративным углублением и приоритетом центра. Сложный смотрит на много ходов вперёд и наказывает за каждую оплошность.
+
+### 🌐 Онлайн по ссылке
+Поделись ссылкой и играй в реальном времени через **Supabase Realtime** — для дружеской партии аккаунт не нужен. Роли, присутствие соперника и реванш работают вживую.
+
+### 🧩 Библиотека задач
+Подборка из **24 тактических задач**, разбитых на разделы Лёгкие / Средние / Сложные, плюс «задача дня». Каждая позиция проверена движком (мат в 1 ход или вынужденный блок). Решение — в отдельном режиме с кнопками «ещё раз» / «дальше» и **полноэкранным режимом**.
+
+### 🏆 Два рейтинга и лидерборда
+Два независимых рейтинга Elo:
+- **PvE** — за игры против ИИ (за более сильных ботов дают больше).
+- **PvP** — за онлайн-партии против других зарегистрированных игроков.
+
+Два отдельных глобальных лидерборда (`/leaderboard?mode=pve|pvp`). У всех **старт с 0**, рейтинг растёт только от реальных партий.
+
+### 🪙 Монеты и магазин косметики
+Побеждай, копи монеты (**+10 за победу / +5 за ничью**) и трать их в **магазине**:
+- 🎨 **12 цветов фишек** — отдельно для *своих* и для *соперника*.
+- 🟦 **6 тем доски** (Классика, Графит, Лес, Багрянец, Полночь, Закат).
+
+Купил один раз, «надел» — и скины применяются в локальных играх, против ИИ и в онлайне.
+
+### 🔐 Аккаунты по-человечески
+Вход по магической ссылке или через Google (Supabase). Новый игрок **обязан выбрать ник** (онбординг-гейт), чтобы в лидерборде не всплывала почта. История партий с реплеями.
+
+### 💡 Мелочи, которые приятны
+- **Подсказки** — лучший ход движка в один тап.
+- **Полноэкранный режим** с подсказкой, новой игрой и выходом.
+- **Реплей с перемоткой** — график оценки и комментарий к каждому ходу.
+- **Двуязычие** — полностью **русский и английский** интерфейс.
+- **Тёмная тема**, mobile-first вёрстка, анимация падения фишек.
+
+### 💎 Pro-тариф (заготовка)
+Каркас под Stripe с кнопкой `Upgrade to Pro` — для более глубокого анализа, дебютной книги и эксклюзивных скинов.
+
+---
+
+## 🛠️ Стек
+
+| Слой        | Технология                                      |
+| ----------- | ----------------------------------------------- |
+| Фреймворк   | Next.js 16 (App Router, RSC)                     |
+| Язык        | TypeScript 5                                     |
+| UI          | React 19, Tailwind CSS v4, lucide-react          |
+| Состояние   | Zustand (с сохранением в `localStorage`)         |
+| Движок      | Свой битборд negamax + альфа-бета                |
+| Бэкенд      | Supabase — Postgres, Auth, Realtime, RLS         |
+| Темы        | next-themes (система / светлая / тёмная)          |
+| Хостинг     | Vercel                                           |
+
+Движок использует классическую **битборд-кодировку Паскаля Понса** (7 колонок × 7 бит, на BigInt) — ту же, что и топовые решатели «Четырёх в ряд». Проверка победы, угроз и генерация ходов — операции сдвига-и-маски за O(1).
+
+---
+
+## 🚀 Запуск локально
 
 ```bash
+npm install
+cp .env.local.example .env.local      # вписать ключи Supabase (опционально)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Открой <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Без настроенного Supabase приложение работает в **гостевом режиме** — локальная игра вдвоём и партии с ИИ доступны; вход, история, рейтинги, магазин и онлайн — выключены.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Включить аккаунты, рейтинги, магазин и онлайн
 
-## Learn More
+1. Создай бесплатный проект на [supabase.com](https://supabase.com).
+2. Впиши URL проекта и anon-ключ в `.env.local`.
+3. Выполни SQL из `supabase/migrations/` **по порядку** (`0001` → `0004`) в SQL-редакторе Supabase.
+4. В **Auth → Providers** включи нужные способы входа (email по умолчанию включён; для Google добавь OAuth-клиент).
+5. Перезапусти `npm run dev`.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🗺️ Структура проекта
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+  lib/
+    engine/
+      bitboard.ts   – примитивы битбордов Паскаля-Понса, проверка победы
+      game.ts       – GameState, легальные ходы, статус, отмена
+      solver.ts     – negamax + α-β + итеративное углубление + пресеты ИИ
+      coach.ts      – пост-анализ партии: метки ходов, поиск угроз
+    cosmetics.ts    – каталог магазина (скины фишек, темы доски) + резолвер
+    elo.ts          – математика Elo + награды монетами
+    puzzles/        – выверенные движком позиции
+    i18n/           – словарь RU/EN + контекст и хуки
+    store/          – Zustand-стор партии (localStorage)
+    supabase/       – браузерный и SSR-клиенты (мягко деградируют)
+    hooks/          – useUser, useMatchPersistence, useGuestId
+  components/
+    Board.tsx       – игровая доска, рендер с учётом скинов
+    GameView.tsx    – локальный режим / ИИ + полный экран
+    OnlineRoom.tsx  – онлайн через каналы Supabase
+    CoachPanel.tsx  – степпер + график оценки + комментарий
+    UsernameGate.tsx, NavBar, AuthMenu, ThemeToggle, LanguageToggle …
+  app/
+    page.tsx                  лендинг (bento-сетка фич)
+    play/ local/ ai/ online/  режимы игры
+    puzzles/                  библиотека задач + решение
+    coach/, coach/[id]/       анализатор
+    shop/                     монеты и магазин косметики
+    leaderboard/              лидерборды PvE / PvP
+    onboarding/               выбор обязательного ника
+    history/, login/, pro/
+    api/smoke/                встроенные тесты движка
+supabase/migrations/          0001 схема → 0004 монеты и косметика
+```
 
-## Deploy on Vercel
+### Как тренер оценивает ход
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Для каждого хода движок считает позицию *до* хода и сравнивает оценку лучшего хода с оценкой сыгранного:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Потеря в оценке | Метка        |
+| --------------- | ------------ |
+| ≤ 1             | Лучший       |
+| ≤ 3             | Хороший      |
+| ≤ 6             | Неточность   |
+| ≤ 12            | Ошибка       |
+| > 12            | Зевок        |
+
+Паттерны перекрывают оценку: сыграл выигрыш сразу → **Лучший**; не сыграл доступный выигрыш → **Упущенная победа**; закрыл единственную проигрышную клетку → **Вынужденный**; проигнорировал угрозу соперника → **Зевок**; лучший ход, создающий ≥ 2 выигрывающих ответа → **Блестящий**.
+
+---
+
+## ✅ Тесты
+
+При запущенном дев-сервере открой <http://localhost:3000/api/smoke>. Прогоняются встроенные проверки движка (победы по горизонтали / вертикали / диагонали, отмена хода, отказ при полной колонке, поиск немедленного выигрыша и блока) и валидность решений всех задач — ответ `{ ok: true, errors: [] }`.
+
+---
+
+## 📜 Лицензия
+
+MIT.
+
+<div align="center">
+<sub>Сделано для челленджа по «Четыре в ряд» от <a href="https://nfactorial.school">nFactorial</a>.</sub>
+</div>
